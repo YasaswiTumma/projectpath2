@@ -1,0 +1,567 @@
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-4">TPO Dashboard</h2>
+
+            <!-- Quick Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-primary" id="totalStudents">0</h3>
+                            <p class="mb-0">Total Students</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-success" id="placedStudents">0</h3>
+                            <p class="mb-0">Placed Students</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-warning" id="activeDrives">0</h3>
+                            <p class="mb-0">Active Drives</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-info" id="avgPackage">0</h3>
+                            <p class="mb-0">Avg Package (LPA)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs mb-4" id="tpoTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="students-tab" data-bs-toggle="tab" data-bs-target="#students" type="button" role="tab">Students</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="drives-tab" data-bs-toggle="tab" data-bs-target="#drives" type="button" role="tab">Placement Drives</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="companies-tab" data-bs-toggle="tab" data-bs-target="#companies" type="button" role="tab">Companies</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab">Reports</button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="tpoTabContent">
+                <!-- Students Tab -->
+                <div class="tab-pane fade show active" id="students" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Student Management</h5>
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                                <i class="fas fa-plus me-1"></i>Add Student
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="studentsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Branch</th>
+                                            <th>CGPA</th>
+                                            <th>Placement Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentsTableBody">
+                                        <!-- Students will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Placement Drives Tab -->
+                <div class="tab-pane fade" id="drives" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Placement Drives</h5>
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addDriveModal">
+                                <i class="fas fa-plus me-1"></i>Schedule Drive
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" id="drivesList">
+                                <!-- Drives will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Companies Tab -->
+                <div class="tab-pane fade" id="companies" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Company Management</h5>
+                            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#addCompanyModal">
+                                <i class="fas fa-plus me-1"></i>Add Company
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" id="companiesList">
+                                <!-- Companies will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Tab -->
+                <div class="tab-pane fade" id="reports" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Placement Reports</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Placement Statistics</h6>
+                                    <canvas id="placementChart"></canvas>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Branch-wise Performance</h6>
+                                    <canvas id="branchChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <h6>Top Performers</h6>
+                                <div id="topPerformers">
+                                    <!-- Top performers will be listed here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Student Modal -->
+<div class="modal fade" id="addStudentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addStudentForm">
+                    <div class="mb-3">
+                        <label for="studentName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="studentName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="studentEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentId" class="form-label">Student ID</label>
+                        <input type="text" class="form-control" id="studentId" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentBranch" class="form-label">Branch</label>
+                        <select class="form-control" id="studentBranch" required>
+                            <option value="">Select Branch</option>
+                            <option value="CSE">Computer Science</option>
+                            <option value="IT">Information Technology</option>
+                            <option value="ECE">Electronics</option>
+                            <option value="ME">Mechanical</option>
+                            <option value="CE">Civil</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentCgpa" class="form-label">CGPA</label>
+                        <input type="number" step="0.01" min="0" max="10" class="form-control" id="studentCgpa" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveStudentBtn">Save Student</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Drive Modal -->
+<div class="modal fade" id="addDriveModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Schedule Placement Drive</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addDriveForm">
+                    <div class="mb-3">
+                        <label for="companyName" class="form-label">Company Name</label>
+                        <input type="text" class="form-control" id="companyName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="driveDate" class="form-label">Drive Date</label>
+                        <input type="date" class="form-control" id="driveDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jobRole" class="form-label">Job Role</label>
+                        <input type="text" class="form-control" id="jobRole" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="package" class="form-label">Package (LPA)</label>
+                        <input type="number" step="0.1" class="form-control" id="package" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="eligibility" class="form-label">Eligibility Criteria</label>
+                        <textarea class="form-control" id="eligibility" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="saveDriveBtn">Schedule Drive</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+class TPODashboard {
+    constructor() {
+        this.students = [];
+        this.drives = [];
+        this.companies = [];
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+        this.loadDashboardData();
+        this.initializeCharts();
+    }
+
+    setupEventListeners() {
+        // Student management
+        document.getElementById('saveStudentBtn').addEventListener('click', () => this.saveStudent());
+
+        // Drive management
+        document.getElementById('saveDriveBtn').addEventListener('click', () => this.saveDrive());
+
+        // Table actions
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('edit-student')) {
+                this.editStudent(e.target.dataset.studentId);
+            } else if (e.target.classList.contains('delete-student')) {
+                this.deleteStudent(e.target.dataset.studentId);
+            } else if (e.target.classList.contains('view-drive')) {
+                this.viewDriveDetails(e.target.dataset.driveId);
+            }
+        });
+    }
+
+    async loadDashboardData() {
+        // Mock data loading - in real app, this would come from backend
+        this.students = [
+            { id: 'CS001', name: 'Alice Johnson', email: 'alice@example.com', branch: 'CSE', cgpa: 8.5, status: 'Placed' },
+            { id: 'CS002', name: 'Bob Smith', email: 'bob@example.com', branch: 'IT', cgpa: 7.8, status: 'Not Placed' },
+            { id: 'CS003', name: 'Charlie Brown', email: 'charlie@example.com', branch: 'CSE', cgpa: 9.2, status: 'Placed' }
+        ];
+
+        this.drives = [
+            { id: 1, company: 'Google', date: '2025-01-15', role: 'Software Engineer', package: 12, status: 'Active' },
+            { id: 2, company: 'Microsoft', date: '2025-01-20', role: 'Data Analyst', package: 8, status: 'Upcoming' }
+        ];
+
+        this.companies = [
+            { id: 1, name: 'Google', visits: 5, placed: 15 },
+            { id: 2, name: 'Microsoft', visits: 3, placed: 8 },
+            { id: 3, name: 'Amazon', visits: 2, placed: 6 }
+        ];
+
+        this.updateDashboardStats();
+        this.renderStudentsTable();
+        this.renderDrives();
+        this.renderCompanies();
+        this.renderReports();
+    }
+
+    updateDashboardStats() {
+        const totalStudents = this.students.length;
+        const placedStudents = this.students.filter(s => s.status === 'Placed').length;
+        const activeDrives = this.drives.filter(d => d.status === 'Active').length;
+        const avgPackage = this.drives.length > 0 ? (this.drives.reduce((sum, d) => sum + d.package, 0) / this.drives.length).toFixed(1) : 0;
+
+        document.getElementById('totalStudents').textContent = totalStudents;
+        document.getElementById('placedStudents').textContent = placedStudents;
+        document.getElementById('activeDrives').textContent = activeDrives;
+        document.getElementById('avgPackage').textContent = avgPackage;
+    }
+
+    renderStudentsTable() {
+        const tbody = document.getElementById('studentsTableBody');
+        tbody.innerHTML = '';
+
+        this.students.forEach(student => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${student.id}</td>
+                <td>${student.name}</td>
+                <td>${student.email}</td>
+                <td>${student.branch}</td>
+                <td>${student.cgpa}</td>
+                <td><span class="badge bg-${student.status === 'Placed' ? 'success' : 'warning'}">${student.status}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary edit-student" data-student-id="${student.id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger delete-student" data-student-id="${student.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    renderDrives() {
+        const drivesList = document.getElementById('drivesList');
+        drivesList.innerHTML = '';
+
+        this.drives.forEach(drive => {
+            const driveCard = document.createElement('div');
+            driveCard.className = 'col-md-6 mb-3';
+            driveCard.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">${drive.company}</h6>
+                        <p class="card-text">
+                            <strong>Role:</strong> ${drive.role}<br>
+                            <strong>Date:</strong> ${drive.date}<br>
+                            <strong>Package:</strong> ${drive.package} LPA
+                        </p>
+                        <span class="badge bg-${drive.status === 'Active' ? 'success' : 'secondary'}">${drive.status}</span>
+                        <button class="btn btn-sm btn-outline-info float-end view-drive" data-drive-id="${drive.id}">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            `;
+            drivesList.appendChild(driveCard);
+        });
+    }
+
+    renderCompanies() {
+        const companiesList = document.getElementById('companiesList');
+        companiesList.innerHTML = '';
+
+        this.companies.forEach(company => {
+            const companyCard = document.createElement('div');
+            companyCard.className = 'col-md-4 mb-3';
+            companyCard.innerHTML = `
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h6 class="card-title">${company.name}</h6>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="border rounded p-2">
+                                    <h5 class="text-primary">${company.visits}</h5>
+                                    <small>Visits</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="border rounded p-2">
+                                    <h5 class="text-success">${company.placed}</h5>
+                                    <small>Placed</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            companiesList.appendChild(companyCard);
+        });
+    }
+
+    renderReports() {
+        this.renderPlacementChart();
+        this.renderBranchChart();
+        this.renderTopPerformers();
+    }
+
+    renderPlacementChart() {
+        const ctx = document.getElementById('placementChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Placed', 'Not Placed'],
+                datasets: [{
+                    data: [
+                        this.students.filter(s => s.status === 'Placed').length,
+                        this.students.filter(s => s.status !== 'Placed').length
+                    ],
+                    backgroundColor: ['#28a745', '#ffc107']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+
+    renderBranchChart() {
+        const branchData = {};
+        this.students.forEach(student => {
+            branchData[student.branch] = (branchData[student.branch] || 0) + 1;
+        });
+
+        const ctx = document.getElementById('branchChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(branchData),
+                datasets: [{
+                    label: 'Students',
+                    data: Object.values(branchData),
+                    backgroundColor: '#007bff'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    renderTopPerformers() {
+        const topPerformers = document.getElementById('topPerformers');
+        const placedStudents = this.students.filter(s => s.status === 'Placed')
+            .sort((a, b) => b.cgpa - a.cgpa)
+            .slice(0, 5);
+
+        topPerformers.innerHTML = placedStudents.map(student => `
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span>${student.name} (${student.branch})</span>
+                <span class="badge bg-success">${student.cgpa} CGPA</span>
+            </div>
+        `).join('');
+    }
+
+    saveStudent() {
+        const name = document.getElementById('studentName').value;
+        const email = document.getElementById('studentEmail').value;
+        const studentId = document.getElementById('studentId').value;
+        const branch = document.getElementById('studentBranch').value;
+        const cgpa = parseFloat(document.getElementById('studentCgpa').value);
+
+        if (!name || !email || !studentId || !branch || !cgpa) {
+            alert('Please fill all fields');
+            return;
+        }
+
+        const newStudent = {
+            id: studentId,
+            name: name,
+            email: email,
+            branch: branch,
+            cgpa: cgpa,
+            status: 'Not Placed'
+        };
+
+        this.students.push(newStudent);
+        this.updateDashboardStats();
+        this.renderStudentsTable();
+
+        // Close modal and reset form
+        bootstrap.Modal.getInstance(document.getElementById('addStudentModal')).hide();
+        document.getElementById('addStudentForm').reset();
+    }
+
+    saveDrive() {
+        const company = document.getElementById('companyName').value;
+        const date = document.getElementById('driveDate').value;
+        const role = document.getElementById('jobRole').value;
+        const packageValue = parseFloat(document.getElementById('package').value);
+
+        if (!company || !date || !role || !packageValue) {
+            alert('Please fill all fields');
+            return;
+        }
+
+        const newDrive = {
+            id: this.drives.length + 1,
+            company: company,
+            date: date,
+            role: role,
+            package: packageValue,
+            status: 'Upcoming'
+        };
+
+        this.drives.push(newDrive);
+        this.updateDashboardStats();
+        this.renderDrives();
+
+        // Close modal and reset form
+        bootstrap.Modal.getInstance(document.getElementById('addDriveModal')).hide();
+        document.getElementById('addDriveForm').reset();
+    }
+
+    editStudent(studentId) {
+        const student = this.students.find(s => s.id === studentId);
+        if (student) {
+            // In real app, populate modal with student data for editing
+            alert(`Edit functionality for ${student.name} would be implemented here`);
+        }
+    }
+
+    deleteStudent(studentId) {
+        if (confirm('Are you sure you want to delete this student?')) {
+            this.students = this.students.filter(s => s.id !== studentId);
+            this.updateDashboardStats();
+            this.renderStudentsTable();
+        }
+    }
+
+    viewDriveDetails(driveId) {
+        const drive = this.drives.find(d => d.id == driveId);
+        if (drive) {
+            alert(`Drive Details:\nCompany: ${drive.company}\nRole: ${drive.role}\nDate: ${drive.date}\nPackage: ${drive.package} LPA`);
+        }
+    }
+
+    initializeCharts() {
+        // Charts will be initialized when data is loaded
+    }
+}
+
+// Initialize TPO dashboard when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    new TPODashboard();
+});
+</script>

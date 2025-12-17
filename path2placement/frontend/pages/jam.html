@@ -1,0 +1,441 @@
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="mb-4">Just A Minute (JAM)</h2>
+
+            <!-- Instructions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>How to Play JAM</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li>You get 1 minute to speak on a given topic</li>
+                        <li>You cannot pause for more than 3 seconds</li>
+                        <li>You cannot repeat words or phrases</li>
+                        <li>You cannot use fillers like "um", "ah", "you know"</li>
+                        <li>Points are awarded for fluency, content, and confidence</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Topic Display -->
+            <div id="topicArea" class="card mb-4 d-none">
+                <div class="card-header">
+                    <h5>Your Topic</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h3 id="jamTopic" class="mb-4">Topic will appear here</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button id="startJamBtn" class="btn btn-success btn-lg w-100">
+                                <i class="fas fa-play-circle me-2"></i>Start Speaking
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button id="newTopicBtn" class="btn btn-warning btn-lg w-100">
+                                <i class="fas fa-random me-2"></i>New Topic
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recording Area -->
+            <div id="recordingArea" class="card mb-4 d-none">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Speaking in Progress</h5>
+                    <div id="timer" class="badge bg-danger fs-5">01:00</div>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i id="micIcon" class="fas fa-microphone fa-4x text-danger mb-3"></i>
+                        <p class="lead" id="statusText">Speak clearly and continuously...</p>
+                    </div>
+
+                    <div class="progress mb-3">
+                        <div id="timeProgress" class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="border rounded p-2">
+                                <h4 id="wordCount">0</h4>
+                                <small>Words Spoken</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border rounded p-2">
+                                <h4 id="pauseCount">0</h4>
+                                <small>Pauses > 3s</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border rounded p-2">
+                                <h4 id="fillerCount">0</h4>
+                                <small>Fillers Used</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Area -->
+            <div id="resultsArea" class="card d-none">
+                <div class="card-header">
+                    <h5>JAM Results</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center mb-4">
+                        <div class="col-md-3">
+                            <h3 id="fluencyScore" class="text-primary">0</h3>
+                            <p>Fluency</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 id="contentScore" class="text-success">0</h3>
+                            <p>Content</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 id="confidenceScore" class="text-warning">0</h3>
+                            <p>Confidence</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 id="totalScore" class="text-danger">0</h3>
+                            <p>Total Score</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6>Detailed Feedback:</h6>
+                        <div id="feedback" class="alert alert-info">
+                            <!-- AI feedback will appear here -->
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6>Your Speech Transcript:</h6>
+                        <div id="transcript" class="border p-3 bg-light" style="max-height: 200px; overflow-y: auto;">
+                            <!-- Transcript will appear here -->
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button id="tryAgainBtn" class="btn btn-primary">Try Again</button>
+                        <button id="practiceMoreBtn" class="btn btn-success ms-2">Practice More Topics</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Recent Scores -->
+            <div class="card">
+                <div class="card-header">
+                    <h5>Your JAM Scores</h5>
+                </div>
+                <div class="card-body">
+                    <div id="recentScores">
+                        <!-- Recent scores will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Practice Tips -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Practice Tips</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="small mb-0">
+                        <li>Prepare key points before starting</li>
+                        <li>Speak at a moderate pace</li>
+                        <li>Use transition words</li>
+                        <li>Maintain eye contact</li>
+                        <li>End with a strong conclusion</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+class JAMSession {
+    constructor() {
+        this.topic = '';
+        this.timeLeft = 60; // 1 minute
+        this.timer = null;
+        this.isRecording = false;
+        this.transcript = '';
+        this.wordCount = 0;
+        this.pauseCount = 0;
+        this.fillerCount = 0;
+        this.lastSpeechTime = 0;
+        this.speechRecognition = null;
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+        this.loadRecentScores();
+        this.showTopicArea();
+    }
+
+    setupEventListeners() {
+        document.getElementById('startJamBtn').addEventListener('click', () => this.startJAM());
+        document.getElementById('newTopicBtn').addEventListener('click', () => this.getNewTopic());
+        document.getElementById('tryAgainBtn').addEventListener('click', () => this.tryAgain());
+        document.getElementById('practiceMoreBtn').addEventListener('click', () => this.practiceMore());
+    }
+
+    getRandomTopic() {
+        const topics = [
+            'My favorite hobby and why I enjoy it',
+            'If I could time travel, where would I go and why',
+            'The importance of learning new skills',
+            'How technology has changed our daily lives',
+            'My most memorable school experience',
+            'The benefits of reading books',
+            'Why teamwork is important in sports',
+            'How to stay motivated during difficult times',
+            'The impact of social media on society',
+            'My dream job and why I want it'
+        ];
+        return topics[Math.floor(Math.random() * topics.length)];
+    }
+
+    showTopicArea() {
+        document.getElementById('topicArea').classList.remove('d-none');
+        document.getElementById('recordingArea').classList.add('d-none');
+        document.getElementById('resultsArea').classList.add('d-none');
+    }
+
+    showRecordingArea() {
+        document.getElementById('topicArea').classList.add('d-none');
+        document.getElementById('recordingArea').classList.remove('d-none');
+        document.getElementById('resultsArea').classList.add('d-none');
+    }
+
+    showResultsArea() {
+        document.getElementById('topicArea').classList.add('d-none');
+        document.getElementById('recordingArea').classList.add('d-none');
+        document.getElementById('resultsArea').classList.remove('d-none');
+    }
+
+    getNewTopic() {
+        this.topic = this.getRandomTopic();
+        document.getElementById('jamTopic').textContent = this.topic;
+    }
+
+    startJAM() {
+        if (!this.topic) {
+            this.getNewTopic();
+        }
+
+        this.timeLeft = 60;
+        this.wordCount = 0;
+        this.pauseCount = 0;
+        this.fillerCount = 0;
+        this.transcript = '';
+        this.lastSpeechTime = Date.now();
+
+        this.showRecordingArea();
+        this.startTimer();
+        this.startSpeechRecognition();
+    }
+
+    startTimer() {
+        this.timer = setInterval(() => {
+            this.timeLeft--;
+            this.updateTimerDisplay();
+
+            if (this.timeLeft <= 0) {
+                this.endJAM();
+            }
+        }, 1000);
+    }
+
+    updateTimerDisplay() {
+        const minutes = Math.floor(this.timeLeft / 60);
+        const seconds = this.timeLeft % 60;
+        document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        const progressPercent = (this.timeLeft / 60) * 100;
+        document.getElementById('timeProgress').style.width = `${progressPercent}%`;
+    }
+
+    startSpeechRecognition() {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            alert('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+            return;
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        this.speechRecognition = new SpeechRecognition();
+
+        this.speechRecognition.continuous = true;
+        this.speechRecognition.interimResults = true;
+        this.speechRecognition.lang = 'en-US';
+
+        this.speechRecognition.onstart = () => {
+            this.isRecording = true;
+            document.getElementById('statusText').textContent = 'Listening... Speak continuously!';
+            document.getElementById('micIcon').className = 'fas fa-microphone fa-4x text-success';
+        };
+
+        this.speechRecognition.onresult = (event) => {
+            let finalTranscript = '';
+            let interimTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript;
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+
+            if (finalTranscript) {
+                this.processTranscript(finalTranscript);
+                this.lastSpeechTime = Date.now();
+            }
+
+            // Check for pauses
+            const now = Date.now();
+            if (now - this.lastSpeechTime > 3000 && this.isRecording) {
+                this.pauseCount++;
+                document.getElementById('pauseCount').textContent = this.pauseCount;
+                this.lastSpeechTime = now;
+            }
+        };
+
+        this.speechRecognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            document.getElementById('statusText').textContent = 'Error occurred. Please try again.';
+        };
+
+        this.speechRecognition.onend = () => {
+            this.isRecording = false;
+            document.getElementById('micIcon').className = 'fas fa-microphone-slash fa-4x text-muted';
+        };
+
+        this.speechRecognition.start();
+    }
+
+    processTranscript(transcript) {
+        this.transcript += transcript + ' ';
+
+        // Count words
+        const words = transcript.trim().split(/\s+/);
+        this.wordCount += words.length;
+        document.getElementById('wordCount').textContent = this.wordCount;
+
+        // Check for fillers
+        const fillers = ['um', 'uh', 'ah', 'you know', 'like', 'so', 'well', 'actually'];
+        const lowerTranscript = transcript.toLowerCase();
+
+        fillers.forEach(filler => {
+            const regex = new RegExp(`\\b${filler}\\b`, 'gi');
+            const matches = lowerTranscript.match(regex);
+            if (matches) {
+                this.fillerCount += matches.length;
+            }
+        });
+
+        document.getElementById('fillerCount').textContent = this.fillerCount;
+    }
+
+    endJAM() {
+        clearInterval(this.timer);
+        if (this.speechRecognition) {
+            this.speechRecognition.stop();
+        }
+
+        this.calculateScore();
+        this.showResultsArea();
+    }
+
+    calculateScore() {
+        // Calculate fluency (based on pauses and fillers)
+        const fluencyPenalty = (this.pauseCount * 5) + (this.fillerCount * 2);
+        const fluencyScore = Math.max(0, 100 - fluencyPenalty);
+
+        // Calculate content (based on word count and topic relevance)
+        const contentScore = Math.min(100, this.wordCount * 2);
+
+        // Calculate confidence (mock score based on speech patterns)
+        const confidenceScore = Math.floor(Math.random() * 40) + 60;
+
+        // Total score
+        const totalScore = Math.round((fluencyScore + contentScore + confidenceScore) / 3);
+
+        document.getElementById('fluencyScore').textContent = fluencyScore;
+        document.getElementById('contentScore').textContent = contentScore;
+        document.getElementById('confidenceScore').textContent = confidenceScore;
+        document.getElementById('totalScore').textContent = totalScore;
+
+        // Generate feedback
+        let feedback = '';
+        if (fluencyScore > 80) feedback += 'Excellent fluency! ';
+        else if (fluencyScore > 60) feedback += 'Good fluency, but try to reduce pauses. ';
+        else feedback += 'Work on reducing pauses and fillers. ';
+
+        if (contentScore > 80) feedback += 'Great content coverage! ';
+        else if (contentScore > 60) feedback += 'Good content, try to elaborate more. ';
+        else feedback += 'Focus on providing more detailed content. ';
+
+        document.getElementById('feedback').textContent = feedback;
+
+        // Show transcript
+        document.getElementById('transcript').textContent = this.transcript || 'No speech detected.';
+
+        // Save result (mock)
+        this.saveResult(totalScore);
+    }
+
+    async saveResult(score) {
+        // Mock save - in real app, this would call backend
+        console.log('JAM result saved:', { topic: this.topic, score: score, transcript: this.transcript });
+    }
+
+    tryAgain() {
+        this.showTopicArea();
+    }
+
+    practiceMore() {
+        this.getNewTopic();
+        this.showTopicArea();
+    }
+
+    async loadRecentScores() {
+        // Mock recent scores
+        const mockScores = [
+            { topic: 'My favorite hobby', score: 85, date: '2025-01-15' },
+            { topic: 'Time travel', score: 78, date: '2025-01-14' },
+            { topic: 'Learning skills', score: 92, date: '2025-01-13' }
+        ];
+
+        const scoresDiv = document.getElementById('recentScores');
+        scoresDiv.innerHTML = '';
+
+        mockScores.forEach(score => {
+            const div = document.createElement('div');
+            div.className = 'd-flex justify-content-between align-items-center mb-2';
+            div.innerHTML = `
+                <div>
+                    <small class="d-block">${score.topic}</small>
+                    <small class="text-muted">${score.date}</small>
+                </div>
+                <span class="badge bg-primary">${score.score}</span>
+            `;
+            scoresDiv.appendChild(div);
+        });
+    }
+}
+
+// Initialize JAM session when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    new JAMSession();
+});
+</script>

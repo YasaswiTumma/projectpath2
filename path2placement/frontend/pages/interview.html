@@ -1,0 +1,538 @@
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="mb-4">Interview Practice</h2>
+
+            <!-- Interview Type Selection -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Select Interview Type</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <button class="btn btn-outline-primary w-100 interview-type-btn" data-type="technical">
+                                <i class="fas fa-code me-2"></i>Technical Interview
+                            </button>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <button class="btn btn-outline-success w-100 interview-type-btn" data-type="hr">
+                                <i class="fas fa-users me-2"></i>HR Interview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Display -->
+            <div id="questionArea" class="card mb-4 d-none">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 id="questionTitle">Question</h5>
+                    <span id="questionTimer" class="badge bg-warning">02:00</span>
+                </div>
+                <div class="card-body">
+                    <h4 id="currentQuestion" class="mb-4">Question will appear here</h4>
+
+                    <div class="mb-3">
+                        <label for="answerInput" class="form-label">Your Answer:</label>
+                        <textarea id="answerInput" class="form-control" rows="6" placeholder="Type your answer here..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button id="hintBtn" class="btn btn-info">
+                            <i class="fas fa-lightbulb me-1"></i>Hint
+                        </button>
+                        <div>
+                            <button id="skipBtn" class="btn btn-warning me-2">Skip</button>
+                            <button id="submitAnswerBtn" class="btn btn-success">Submit Answer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hint Modal -->
+            <div class="modal fade" id="hintModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Hint</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="hintText">Hint will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Area -->
+            <div id="resultsArea" class="card d-none">
+                <div class="card-header">
+                    <h5>Interview Results</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4">
+                            <h3 id="contentScore" class="text-primary">0</h3>
+                            <p>Content Quality</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 id="structureScore" class="text-success">0</h3>
+                            <p>Answer Structure</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 id="overallScore" class="text-warning">0</h3>
+                            <p>Overall Score</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6>AI Feedback:</h6>
+                        <div id="feedback" class="alert alert-info">
+                            <!-- AI feedback will appear here -->
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6>Sample Answer:</h6>
+                        <div id="sampleAnswer" class="border p-3 bg-light">
+                            <!-- Sample answer will appear here -->
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button id="nextQuestionBtn" class="btn btn-primary">Next Question</button>
+                        <button id="endInterviewBtn" class="btn btn-danger ms-2">End Interview</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interview Summary -->
+            <div id="summaryArea" class="card d-none">
+                <div class="card-header">
+                    <h5>Interview Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center mb-4">
+                        <div class="col-md-3">
+                            <h4 id="totalQuestions">0</h4>
+                            <p>Questions Answered</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h4 id="averageScore">0</h4>
+                            <p>Average Score</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h4 id="timeSpent">0</h4>
+                            <p>Time Spent (min)</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h4 id="finalGrade">F</h4>
+                            <p>Final Grade</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6>Strengths:</h6>
+                        <ul id="strengthsList">
+                            <!-- Strengths will be listed here -->
+                        </ul>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6>Areas for Improvement:</h6>
+                        <ul id="improvementsList">
+                            <!-- Improvements will be listed here -->
+                        </ul>
+                    </div>
+
+                    <div class="text-center">
+                        <button id="newInterviewBtn" class="btn btn-primary">Start New Interview</button>
+                        <button id="backToDashboardBtn" class="btn btn-secondary ms-2">Back to Dashboard</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Progress Sidebar -->
+            <div class="card">
+                <div class="card-header">
+                    <h5>Interview Progress</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Questions Completed</small>
+                        <div class="progress">
+                            <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <small id="progressText">0/10</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6>Current Scores:</h6>
+                        <div id="currentScores">
+                            <!-- Current question scores will be shown here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Tips -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Interview Tips</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="small mb-0">
+                        <li>Structure your answer: Situation, Action, Result</li>
+                        <li>Use specific examples from your experience</li>
+                        <li>Be concise but comprehensive</li>
+                        <li>Ask clarifying questions if needed</li>
+                        <li>Show enthusiasm and confidence</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+class InterviewPractice {
+    constructor() {
+        this.interviewType = '';
+        this.questions = [];
+        this.currentQuestionIndex = 0;
+        this.answers = [];
+        this.scores = [];
+        this.timeLeft = 120; // 2 minutes per question
+        this.timer = null;
+        this.totalTimeSpent = 0;
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Interview type selection
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('interview-type-btn')) {
+                this.selectInterviewType(e.target.dataset.type);
+            }
+        });
+
+        // Question interaction
+        document.getElementById('submitAnswerBtn').addEventListener('click', () => this.submitAnswer());
+        document.getElementById('skipBtn').addEventListener('click', () => this.skipQuestion());
+        document.getElementById('hintBtn').addEventListener('click', () => this.showHint());
+
+        // Results navigation
+        document.getElementById('nextQuestionBtn').addEventListener('click', () => this.nextQuestion());
+        document.getElementById('endInterviewBtn').addEventListener('click', () => this.endInterview());
+        document.getElementById('newInterviewBtn').addEventListener('click', () => this.newInterview());
+        document.getElementById('backToDashboardBtn').addEventListener('click', () => this.backToDashboard());
+    }
+
+    selectInterviewType(type) {
+        this.interviewType = type;
+        this.questions = this.getQuestionsForType(type);
+        this.currentQuestionIndex = 0;
+        this.answers = [];
+        this.scores = [];
+        this.totalTimeSpent = 0;
+
+        this.showQuestionArea();
+        this.startQuestionTimer();
+        this.showQuestion();
+    }
+
+    getQuestionsForType(type) {
+        const technicalQuestions = [
+            {
+                question: "Explain the difference between supervised and unsupervised learning.",
+                hint: "Think about labeled vs unlabeled data",
+                sampleAnswer: "Supervised learning uses labeled data to train models for prediction, while unsupervised learning finds patterns in unlabeled data for tasks like clustering."
+            },
+            {
+                question: "What is the time complexity of quicksort in the worst case?",
+                hint: "Consider when the pivot is always the smallest or largest element",
+                sampleAnswer: "O(n²) when the pivot is always the smallest or largest element, leading to unbalanced partitions."
+            },
+            {
+                question: "Explain the concept of polymorphism in object-oriented programming.",
+                hint: "Think about 'many forms' - same interface, different implementations",
+                sampleAnswer: "Polymorphism allows objects of different classes to be treated as objects of a common superclass, enabling method overriding and dynamic method binding."
+            }
+        ];
+
+        const hrQuestions = [
+            {
+                question: "Tell me about a time when you faced a difficult challenge at work.",
+                hint: "Use STAR method: Situation, Task, Action, Result",
+                sampleAnswer: "In my previous role, we faced a tight deadline for a project. I organized daily stand-ups, delegated tasks based on team strengths, and we delivered on time with quality results."
+            },
+            {
+                question: "Where do you see yourself in 5 years?",
+                hint: "Show ambition while being realistic about growth",
+                sampleAnswer: "I see myself in a senior role, leading projects and mentoring junior team members, while continuously learning new technologies and contributing to company growth."
+            },
+            {
+                question: "Why do you want to work for our company?",
+                hint: "Research the company and connect your values to theirs",
+                sampleAnswer: "I'm attracted to your company's innovative approach to technology and commitment to employee development. Your recent projects in AI align perfectly with my interests and career goals."
+            }
+        ];
+
+        return type === 'technical' ? technicalQuestions : hrQuestions;
+    }
+
+    showQuestionArea() {
+        document.getElementById('questionArea').classList.remove('d-none');
+        document.getElementById('resultsArea').classList.add('d-none');
+        document.getElementById('summaryArea').classList.add('d-none');
+    }
+
+    showResultsArea() {
+        document.getElementById('questionArea').classList.add('d-none');
+        document.getElementById('resultsArea').classList.remove('d-none');
+        document.getElementById('summaryArea').classList.add('d-none');
+    }
+
+    showSummaryArea() {
+        document.getElementById('questionArea').classList.add('d-none');
+        document.getElementById('resultsArea').classList.add('d-none');
+        document.getElementById('summaryArea').classList.remove('d-none');
+    }
+
+    startQuestionTimer() {
+        this.timeLeft = 120;
+        this.updateTimerDisplay();
+
+        this.timer = setInterval(() => {
+            this.timeLeft--;
+            this.updateTimerDisplay();
+
+            if (this.timeLeft <= 0) {
+                this.autoSubmitAnswer();
+            }
+        }, 1000);
+    }
+
+    updateTimerDisplay() {
+        const minutes = Math.floor(this.timeLeft / 60);
+        const seconds = this.timeLeft % 60;
+        document.getElementById('questionTimer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    showQuestion() {
+        const question = this.questions[this.currentQuestionIndex];
+        document.getElementById('questionTitle').textContent = `Question ${this.currentQuestionIndex + 1} of ${this.questions.length}`;
+        document.getElementById('currentQuestion').textContent = question.question;
+        document.getElementById('answerInput').value = '';
+
+        this.updateProgress();
+    }
+
+    showHint() {
+        const question = this.questions[this.currentQuestionIndex];
+        document.getElementById('hintText').textContent = question.hint;
+
+        const modal = new bootstrap.Modal(document.getElementById('hintModal'));
+        modal.show();
+    }
+
+    submitAnswer() {
+        const answer = document.getElementById('answerInput').value.trim();
+        if (!answer) {
+            alert('Please provide an answer before submitting.');
+            return;
+        }
+
+        clearInterval(this.timer);
+        const timeSpent = 120 - this.timeLeft;
+        this.totalTimeSpent += timeSpent;
+
+        this.answers.push({
+            questionIndex: this.currentQuestionIndex,
+            answer: answer,
+            timeSpent: timeSpent
+        });
+
+        this.evaluateAnswer(answer);
+    }
+
+    autoSubmitAnswer() {
+        clearInterval(this.timer);
+        const timeSpent = 120;
+        this.totalTimeSpent += timeSpent;
+
+        this.answers.push({
+            questionIndex: this.currentQuestionIndex,
+            answer: 'Time expired - no answer provided',
+            timeSpent: timeSpent
+        });
+
+        this.evaluateAnswer('');
+    }
+
+    skipQuestion() {
+        clearInterval(this.timer);
+        const timeSpent = 120 - this.timeLeft;
+        this.totalTimeSpent += timeSpent;
+
+        this.answers.push({
+            questionIndex: this.currentQuestionIndex,
+            answer: 'Skipped',
+            timeSpent: timeSpent
+        });
+
+        this.scores.push(0);
+        this.nextQuestion();
+    }
+
+    evaluateAnswer(answer) {
+        const question = this.questions[this.currentQuestionIndex];
+
+        // Mock evaluation - in real app, this would use AI/NLP
+        let contentScore = 0;
+        let structureScore = 0;
+
+        if (answer.length > 50) contentScore += 40;
+        if (answer.length > 100) contentScore += 30;
+        if (answer.includes('.')) structureScore += 50; // Basic sentence structure check
+
+        // Mock keyword matching
+        const keywords = ['example', 'experience', 'learned', 'result', 'challenge'];
+        const matchedKeywords = keywords.filter(keyword => answer.toLowerCase().includes(keyword)).length;
+        contentScore += matchedKeywords * 10;
+
+        structureScore += Math.min(50, answer.split('.').length * 10); // Sentence count
+
+        const overallScore = Math.round((contentScore + structureScore) / 2);
+
+        this.scores.push(overallScore);
+
+        // Show results
+        document.getElementById('contentScore').textContent = contentScore;
+        document.getElementById('structureScore').textContent = structureScore;
+        document.getElementById('overallScore').textContent = overallScore;
+
+        // Generate feedback
+        let feedback = '';
+        if (overallScore >= 80) feedback = 'Excellent answer! Well-structured and comprehensive.';
+        else if (overallScore >= 60) feedback = 'Good answer. Consider adding more specific examples.';
+        else if (overallScore >= 40) feedback = 'Decent attempt. Work on structure and detail.';
+        else feedback = 'Needs improvement. Focus on providing complete, structured answers.';
+
+        document.getElementById('feedback').textContent = feedback;
+        document.getElementById('sampleAnswer').textContent = question.sampleAnswer;
+
+        this.showResultsArea();
+    }
+
+    nextQuestion() {
+        this.currentQuestionIndex++;
+
+        if (this.currentQuestionIndex >= this.questions.length) {
+            this.showInterviewSummary();
+        } else {
+            this.showQuestionArea();
+            this.startQuestionTimer();
+            this.showQuestion();
+        }
+    }
+
+    endInterview() {
+        this.showInterviewSummary();
+    }
+
+    showInterviewSummary() {
+        const totalQuestions = this.questions.length;
+        const answeredQuestions = this.scores.length;
+        const averageScore = answeredQuestions > 0 ? Math.round(this.scores.reduce((a, b) => a + b, 0) / answeredQuestions) : 0;
+        const timeSpentMinutes = Math.round(this.totalTimeSpent / 60);
+
+        // Calculate grade
+        let grade = 'F';
+        if (averageScore >= 90) grade = 'A+';
+        else if (averageScore >= 80) grade = 'A';
+        else if (averageScore >= 70) grade = 'B';
+        else if (averageScore >= 60) grade = 'C';
+        else if (averageScore >= 50) grade = 'D';
+
+        document.getElementById('totalQuestions').textContent = answeredQuestions;
+        document.getElementById('averageScore').textContent = averageScore;
+        document.getElementById('timeSpent').textContent = timeSpentMinutes;
+        document.getElementById('finalGrade').textContent = grade;
+
+        // Generate strengths and improvements
+        const strengths = [];
+        const improvements = [];
+
+        if (averageScore >= 70) strengths.push('Strong overall performance');
+        if (this.answers.some(a => a.timeSpent < 90)) strengths.push('Good time management');
+        if (this.scores.filter(s => s >= 80).length > totalQuestions / 2) strengths.push('Consistent high-quality answers');
+
+        if (averageScore < 70) improvements.push('Work on answer structure and completeness');
+        if (this.answers.some(a => a.timeSpent > 110)) improvements.push('Improve time management');
+        if (this.scores.some(s => s < 50)) improvements.push('Practice providing more detailed responses');
+
+        if (strengths.length === 0) strengths.push('Keep practicing to build confidence');
+        if (improvements.length === 0) improvements.push('Continue refining your interview skills');
+
+        const strengthsList = document.getElementById('strengthsList');
+        const improvementsList = document.getElementById('improvementsList');
+
+        strengthsList.innerHTML = strengths.map(s => `<li>${s}</li>`).join('');
+        improvementsList.innerHTML = improvements.map(i => `<li>${i}</li>`).join('');
+
+        this.showSummaryArea();
+    }
+
+    newInterview() {
+        // Reset everything
+        this.interviewType = '';
+        this.questions = [];
+        this.currentQuestionIndex = 0;
+        this.answers = [];
+        this.scores = [];
+        this.totalTimeSpent = 0;
+
+        document.getElementById('questionArea').classList.add('d-none');
+        document.getElementById('resultsArea').classList.add('d-none');
+        document.getElementById('summaryArea').classList.add('d-none');
+    }
+
+    backToDashboard() {
+        // Navigate back to dashboard - in real app, this would use routing
+        window.location.href = 'dashboard.html';
+    }
+
+    updateProgress() {
+        const progress = ((this.currentQuestionIndex + 1) / this.questions.length) * 100;
+        document.getElementById('progressBar').style.width = `${progress}%`;
+        document.getElementById('progressText').textContent = `${this.currentQuestionIndex + 1}/${this.questions.length}`;
+
+        // Update current scores display
+        const scoresDiv = document.getElementById('currentScores');
+        scoresDiv.innerHTML = '';
+
+        this.scores.forEach((score, index) => {
+            const div = document.createElement('div');
+            div.className = 'd-flex justify-content-between mb-1';
+            div.innerHTML = `
+                <small>Q${index + 1}:</small>
+                <span class="badge bg-${score >= 70 ? 'success' : score >= 50 ? 'warning' : 'danger'}">${score}</span>
+            `;
+            scoresDiv.appendChild(div);
+        });
+    }
+}
+
+// Initialize interview practice when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    new InterviewPractice();
+});
+</script>

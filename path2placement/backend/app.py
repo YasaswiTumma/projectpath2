@@ -8,6 +8,7 @@ CORS(app)
 
 # Register blueprints
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
+app.register_blueprint(practice_bp, url_prefix='/api/practice')
 
 @app.route('/')
 def home():

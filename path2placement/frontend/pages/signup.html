@@ -1,0 +1,47 @@
+<div class="form-container">
+    <h2 class="text-center mb-4">Sign Up for Path2Placement</h2>
+    <form id="signupForm">
+        <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" required>
+        </div>
+        <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select class="form-control" id="role" required>
+                <option value="student">Student</option>
+                <option value="tpo">TPO</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+        <div class="mb-3" id="studentIdField">
+            <label for="studentId" class="form-label">Student ID</label>
+            <input type="text" class="form-control" id="studentId">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+    </form>
+    <div class="text-center mt-3">
+        <a href="#" id="showLogin">Already have an account? Login</a>
+    </div>
+</div>
+
+<script>
+// Show/hide student ID field based on role selection
+document.getElementById('role').addEventListener('change', function() {
+    const studentIdField = document.getElementById('studentIdField');
+    if (this.value === 'student') {
+        studentIdField.style.display = 'block';
+        document.getElementById('studentId').required = true;
+    } else {
+        studentIdField.style.display = 'none';
+        document.getElementById('studentId').required = false;
+    }
+});
+</script>
